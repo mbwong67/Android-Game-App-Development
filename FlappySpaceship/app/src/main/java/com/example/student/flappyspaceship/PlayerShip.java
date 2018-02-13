@@ -3,6 +3,7 @@ package com.example.student.flappyspaceship;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 
 /**
  * Created by student on 08/02/2018.
@@ -22,6 +23,12 @@ public class PlayerShip
     private final int MIN_SPEED = 1;
     private final int MAX_SPEED = 20;
 
+    // A hit box for collision detection
+    private Rect hitBox;
+
+    private int shieldStrength;
+
+
     public PlayerShip(Context context, int screenX, int screenY)
     {
         x = 50;
@@ -32,6 +39,11 @@ public class PlayerShip
 
         maxY = screenY - bitmap.getHeight();
         minY = 0;
+
+        // Initialize the hit box
+        hitBox = new Rect(x, y, bitmap.getWidth(), bitmap.getHeight());
+
+        shieldStrength = 2;
     }
 
     public void update()
@@ -67,6 +79,12 @@ public class PlayerShip
         {
             y = maxY;
         }
+
+        // Refresh hit box location
+        hitBox.left = x;
+        hitBox.top = y;
+        hitBox.right = x + bitmap.getWidth();
+        hitBox.bottom = y + bitmap.getHeight();
     }
 
     public Bitmap getBitmap()
@@ -92,4 +110,17 @@ public class PlayerShip
     public void setBoosting() { boosting = true; }
 
     public void stopBoosting() { boosting = false; }
+
+    public Rect getHitbox()
+    {
+        return hitBox;
+    }
+
+    public int getShieldStrength() {
+        return shieldStrength;
+    }
+
+    public void reduceShieldStrength(){
+        shieldStrength --;
+    }
 }

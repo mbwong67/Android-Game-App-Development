@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
+import android.view.KeyEvent;
 
 public class GameActivity extends Activity
 {
@@ -44,5 +45,14 @@ public class GameActivity extends Activity
     {
         super.onResume();
         gameView.resume();
+    }
+
+    // If the player hits the back button, quit the app
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            finish();
+            return true;
+        }
+        return false;
     }
 }
