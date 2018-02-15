@@ -2,51 +2,79 @@ package com.example.student.flappyspaceship;
 
 import java.util.Random;
 
+
+
 public class SpaceDust
 {
- private int x, y;
- private int speed;
+    //integers that store the coordinates of the space dust particle
+    private int x, y;
+    //integer that stores the speed at which the space dust particles move
+    private int speed;
 
- private int maxX;
- private int maxY;
- private int minX;
- private int minY;
+    //integers that store the boundaries of the ship movement (X-axis)
+    private int maxX;
+    private int minX;
+    //integers that store the boundaries of the ship movement (Y-axis)
+    private int maxY;
+    private int minY;
 
- public SpaceDust(int screenX, int screenY)
- {
-     maxX = screenX;
-     maxY = screenY;
-     minX = 0;
-     minY = 0;
+    //Constructor for SpaceDust
+    public SpaceDust(int screenX, int screenY)
+    {
+        //Assigns the right x-axis boundary for the space dust
+        maxX = screenX;
+        //Assigns the top y-axis boundary for the space dust
+        maxY = screenY;
+        //Assigns the left x-axis boundary for the space dust
+        minX = 0;
+        //Assigns the bottom y-axis boundary for the space dust
+        minY = 0;
 
-     Random generator = new Random();
-     speed = generator.nextInt(10);
+        //Creates an instance of the Random object
+        Random generator = new Random();
 
-     x = generator.nextInt(maxX);
-     y = generator.nextInt(maxY);
- }
+        //Generates and assigns a random number between 0 and 9
+        //to the speed of the space dust
+        speed  = generator.nextInt(10);
 
- public void update(int playerSpeed)
- {
-     x -= playerSpeed;
-     x -= speed;
+        //Generates and assigns a random x-coordinate for the space dust
+        x = generator.nextInt(maxX);
+        //Generates and assigns a random y-coordinate for the space dust
+        y = generator.nextInt(maxY);
+    }
 
-     if (x < 0)
-     {
-         x = maxX;
-         Random generator = new Random();
-         y = generator.nextInt(maxY);
-         speed = generator.nextInt(15);
-     }
- }
+    public void update(int playerSpeed)
+    {
+        //Increases speed when the player ship increases speed
+        x -= playerSpeed;
+        x -= speed;
 
- public int getX()
- {
-     return x;
- }
+        //Respawns when the space dust is offscreen
+        if(x < 0)
+        {
+            //Assigns the x-coordinate on the screen for the space dust
+            x = maxX;
 
- public int getY()
- {
-     return y;
- }
+            //Creates an instance of the Random object
+            Random generator = new Random();
+
+            //Generates and assigns the y-coordinate on the screen for the space dust
+            y = generator.nextInt(maxY);
+
+            //Generates and assigns a random number between 9 and 19
+            //to the speed of the space dust
+            speed = generator.nextInt(15);
+        }
+    }
+
+    //Gets the x-coordinate of the space dust
+    public int getX()
+    {
+        return x;
+    }
+    //Gets the y-coordinate of the space dust
+    public int getY()
+    {
+        return y;
+    }
 }
