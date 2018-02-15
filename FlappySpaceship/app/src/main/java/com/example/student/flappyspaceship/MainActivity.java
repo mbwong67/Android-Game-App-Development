@@ -6,11 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
-<<<<<<< HEAD
 import android.widget.Button;
-=======
-import android.widget.ImageButton;
->>>>>>> fe6d1acc4aa6e6c4418ad38b42288985960659e5
 import android.widget.TextView;
 
 public class MainActivity extends Activity
@@ -48,11 +44,7 @@ implements View.OnClickListener
         //Set UI layout as the view
         setContentView(R.layout.activity_main);
 
-<<<<<<< HEAD
         // Prepare to load fastest time
-=======
-// Prepare to load fastest time
->>>>>>> fe6d1acc4aa6e6c4418ad38b42288985960659e5
         SharedPreferences prefs;
         SharedPreferences.Editor editor;
         prefs = getSharedPreferences("HiScores", MODE_PRIVATE);
@@ -64,33 +56,13 @@ implements View.OnClickListener
         final TextView textFastestTime =
                 (TextView)findViewById(R.id.textHighScore);
 
-        // Get a reference to the TextView in our layout
-        final TextView textFastestTime = findViewById(R.id.textHighScore);
-
         //Listen for clicks
         buttonPlay.setOnClickListener(this);
 
-<<<<<<< HEAD
         // Load fastest time
         // if not available our high score = 1000000
         long fastestTime = prefs.getLong("fastestTime", 1000000);
         // Put the high score in our TextView
         textFastestTime.setText("Fastest Time:" + fastestTime);
-=======
-// Load fastest time
-// if not available our high score = 1000000
-        long fastestTime = prefs.getLong("fastestTime", 1000000);
-// Put the high score in our TextView
-        textFastestTime.setText("Fastest Time:" + fastestTime);
-    }
-
-    // If the player hits the back button, quit the app
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            finish();
-            return true;
-        }
-        return false;
->>>>>>> fe6d1acc4aa6e6c4418ad38b42288985960659e5
     }
 }
