@@ -4,7 +4,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
+<<<<<<< HEAD
 
+=======
+>>>>>>> fe6d1acc4aa6e6c4418ad38b42288985960659e5
 
 
 public class PlayerShip
@@ -31,7 +34,16 @@ public class PlayerShip
 
 
 
+<<<<<<< HEAD
     //Constructor for PlayerShip
+=======
+    // A hit box for collision detection
+    private Rect hitBox;
+
+    private int shieldStrength;
+
+
+>>>>>>> fe6d1acc4aa6e6c4418ad38b42288985960659e5
     public PlayerShip(Context context, int screenX, int screenY)
     {
         //Assigns the starting x-coordinate of the player ship
@@ -49,9 +61,16 @@ public class PlayerShip
         maxY = screenY - bitmap.getHeight();
         //Assigns the bottom y-axis boundary for the player ship
         minY = 0;
+<<<<<<< HEAD
         //Initialises the collision box of the player ship
         hitBox = new Rect(x, y, bitmap.getWidth(), bitmap.getHeight());
         //Initialises the strength of the shield of the player ship
+=======
+
+        // Initialize the hit box
+        hitBox = new Rect(x, y, bitmap.getWidth(), bitmap.getHeight());
+
+>>>>>>> fe6d1acc4aa6e6c4418ad38b42288985960659e5
         shieldStrength = 2;
     }
 
@@ -98,11 +117,16 @@ public class PlayerShip
             y = maxY;
         }
 
+<<<<<<< HEAD
         //Updates the collision box location for the player ship
+=======
+        // Refresh hit box location
+>>>>>>> fe6d1acc4aa6e6c4418ad38b42288985960659e5
         hitBox.left = x;
         hitBox.top = y;
         hitBox.right = x + bitmap.getWidth();
         hitBox.bottom = y + bitmap.getHeight();
+<<<<<<< HEAD
     }
 
 
@@ -110,6 +134,8 @@ public class PlayerShip
     public void reduceShieldStrength()
     {
         shieldStrength--;
+=======
+>>>>>>> fe6d1acc4aa6e6c4418ad38b42288985960659e5
     }
 
 
@@ -136,11 +162,20 @@ public class PlayerShip
     {
         return y;
     }
+<<<<<<< HEAD
     //Gets the collision box of the player ship
+=======
+
+    public void setBoosting() { boosting = true; }
+
+    public void stopBoosting() { boosting = false; }
+
+>>>>>>> fe6d1acc4aa6e6c4418ad38b42288985960659e5
     public Rect getHitbox()
     {
         return hitBox;
     }
+<<<<<<< HEAD
     //Gets the strength of the shield of the player ship
     public int getShieldStrength()
     {
@@ -155,5 +190,14 @@ public class PlayerShip
     public void stopBoosting()
     {
         boosting = false;
+=======
+
+    public int getShieldStrength() {
+        return shieldStrength;
+    }
+
+    public void reduceShieldStrength(){
+        shieldStrength --;
+>>>>>>> fe6d1acc4aa6e6c4418ad38b42288985960659e5
     }
 }
