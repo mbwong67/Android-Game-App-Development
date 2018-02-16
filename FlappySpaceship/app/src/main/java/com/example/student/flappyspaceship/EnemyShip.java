@@ -7,28 +7,24 @@ import android.graphics.Rect;
 
 import java.util.Random;
 
+import static com.example.student.flappyspaceship.ObjectType.ENEMY;
 
+/**
+ * EnemyShip :: Used as a blueprint for the enemies in the game.
+ * Created by Jonathon Tyson & Cristian Murarescu on 13/02/2018.
+ */
 
-public class EnemyShip
+public class EnemyShip extends GameObject
 {
-    //Bitmap that stores the image for the ship
-    private Bitmap bitmap;
-    //integers that store the coordinates of the ship
-    private int x, y;
     //integer that stores the speed of the ship
     private int speed = 1;
-    //integers that store the boundaries of the ship movement (X-axis)
-    private int maxX, minX;
-    //integers that store the boundaries of the ship movement (Y-axis)
-    private int maxY, minY;
-    //Rect that stores the collision box of the player ship
-    private Rect hitBox;
-
-
 
     //Constructor for EnemyShip
     public EnemyShip(Context context, int screenX, int screenY)
     {
+        // Determines the type of the GameObject
+        super(ENEMY);
+
         //Creates an instance of the Random object
         Random generator = new Random();
         int whichBitmap = generator.nextInt(3);
@@ -73,7 +69,6 @@ public class EnemyShip
     }
 
 
-
     //Updates the enemy ship
     public void update(int playerSpeed)
     {
@@ -106,7 +101,6 @@ public class EnemyShip
     }
 
 
-
     public void scaleBitmap(int x){
         if(x < 1000) {
             bitmap = Bitmap.createScaledBitmap(bitmap,
@@ -119,36 +113,5 @@ public class EnemyShip
                     bitmap.getHeight() / 2,
                     false);
         }
-    }
-
-
-
-    //Getters & Setters
-
-    //Gets the bitmap of the enemy ship
-    public Bitmap getBitmap()
-    {
-        return bitmap;
-    }
-    //Gets the x-coordinate of the enemy ship
-    public int getX()
-    {
-        return x;
-    }
-    //Gets the y-coordinate of the enemy ship
-    public int getY()
-    {
-        return y;
-    }
-    //Gets the collision box of the enemy ship
-    public Rect getHitbox()
-    {
-        return hitBox;
-    }
-    //Sets an enemy ship out of bounds and force a respawn
-    //*Used by FSView update() method*
-    public void setX(int x)
-    {
-        this.x = x;
     }
 }

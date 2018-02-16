@@ -347,35 +347,35 @@ public class FSView extends SurfaceView implements Runnable
             //Draws the player
             canvas.drawBitmap(
                     player.getBitmap(),
-                    player.getX(),
-                    player.getY(),
+                    player.GetX(),
+                    player.GetY(),
                     paint);
 
             //Draws the enemies
             canvas.drawBitmap(
                     enemy1.getBitmap(),
-                    enemy1.getX(),
-                    enemy1.getY(),
+                    enemy1.GetX(),
+                    enemy1.GetY(),
                     paint);
             canvas.drawBitmap(
                     enemy2.getBitmap(),
-                    enemy2.getX(),
-                    enemy2.getY(),
+                    enemy2.GetX(),
+                    enemy2.GetY(),
                     paint);
             canvas.drawBitmap(
                     enemy3.getBitmap(),
-                    enemy3.getX(),
-                    enemy3.getY(),
+                    enemy3.GetX(),
+                    enemy3.GetY(),
                     paint);
 
             if(screenX > 1000)
             {
                 canvas.drawBitmap(enemy4.getBitmap(),
-                        enemy4.getX(), enemy4.getY(), paint);
+                        enemy4.GetX(), enemy4.GetY(), paint);
             }if(screenX > 1200)
             {
             canvas.drawBitmap(enemy5.getBitmap(),
-                    enemy5.getX(), enemy5.getY(), paint);
+                    enemy5.GetX(), enemy5.GetY(), paint);
         }
 
 
