@@ -8,7 +8,7 @@ import android.graphics.Rect;
  * Created by Jonathon Tyson & Cristian Murarescu on 16/02/2018.
  */
 
-public class GameObject
+public abstract class GameObject
 {
     //Bitmap that stores the image for the ship
     protected Bitmap bitmap;
@@ -27,6 +27,16 @@ public class GameObject
 
     // Determines the type of the object
     protected ObjectType TYPE;
+
+    public void Update()
+    {
+
+    }
+
+    public void Draw()
+    {
+
+    }
 
 
     public GameObject(ObjectType type)

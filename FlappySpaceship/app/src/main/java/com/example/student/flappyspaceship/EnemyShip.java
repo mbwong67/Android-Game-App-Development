@@ -16,14 +16,19 @@ import static com.example.student.flappyspaceship.ObjectType.ENEMY;
 
 public class EnemyShip extends GameObject
 {
+    // Has a copy of the players ship for use in logic
+    private PlayerShip m_PlayerShip;
+
     //integer that stores the speed of the ship
     private int speed = 1;
 
     //Constructor for EnemyShip
-    public EnemyShip(Context context, int screenX, int screenY)
+    public EnemyShip(Context context, int screenX, int screenY, PlayerShip player)
     {
         // Determines the type of the GameObject
         super(ENEMY);
+
+        m_PlayerShip = player;
 
         //Creates an instance of the Random object
         Random generator = new Random();
@@ -70,10 +75,10 @@ public class EnemyShip extends GameObject
 
 
     //Updates the enemy ship
-    public void update(int playerSpeed)
+    public void Update()
     {
         //Increases speed when the player ship increases speed
-        x -= playerSpeed;
+        x -= m_PlayerShip.getSpeed();
         x -= speed;
 
         //Respawns when the enemy ship is offscreen

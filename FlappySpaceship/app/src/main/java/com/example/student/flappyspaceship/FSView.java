@@ -18,14 +18,20 @@ import android.view.SurfaceView;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static com.example.student.flappyspaceship.ObjectType.SPACEDUST;
 
 
 public class FSView extends SurfaceView implements Runnable
 {
+    private boolean debugging = false;
+
     private SharedPreferences prefs;
     private SharedPreferences.Editor editor;
 
     private Context context;
+
+    // Manages all of the objects in the game
+    public ObjectManager m_objects;
 
     //objects and integers to store the sound assets
     private SoundPool soundPool;
@@ -51,12 +57,11 @@ public class FSView extends SurfaceView implements Runnable
 
     //Game objects
     private PlayerShip player;
-
     public EnemyShip enemy1;
     public EnemyShip enemy2;
     public EnemyShip enemy3;
-    public EnemyShip enemy4;
-    public EnemyShip enemy5;
+    // public EnemyShip enemy4;
+    // public EnemyShip enemy5;
 
     //Drawing objects
     private Paint paint;
@@ -64,15 +69,16 @@ public class FSView extends SurfaceView implements Runnable
     private SurfaceHolder ourHolder;
 
     //SpaceDust objects
-    public ArrayList<SpaceDust> spaceDustList =
-            new ArrayList<SpaceDust>();
-
+    public ArrayList<SpaceDust> spaceDustList = new ArrayList<SpaceDust>();
 
 
     public FSView(Context context, int x, int y)
     {
         super(context);
         this.context = context;
+
+        // Instantiate the ObjectManager
+        m_objects = new ObjectManager();
 
         // Get a reference to a file called HiScores.
         // If id doesn't exist one is created
@@ -145,7 +151,7 @@ public class FSView extends SurfaceView implements Runnable
 
     //Clean up the thread if the game is:
     //interrupted or the player quits
-    public void pause()
+    public void Pause()
     {
         playing = false;
         try
@@ -161,7 +167,7 @@ public class FSView extends SurfaceView implements Runnable
 
     //Create new thread and start it
     //Execution moves to R
-    public void resume()
+    public void Resume()
     {
         playing = true;
         gameThread = new Thread(this);
@@ -175,16 +181,18 @@ public class FSView extends SurfaceView implements Runnable
     {
         while(playing)
         {
-            update();
-            draw();
+            Update();
+            Draw();
             control();
         }
     }
 
 
 
-    private void update()
+    private void Update()
     {
+
+
         //Collision detection on new positions,
         //checking last frames position which has just been drawn
 
@@ -213,18 +221,18 @@ public class FSView extends SurfaceView implements Runnable
             enemy3.setX(-300);
         }
 
-        if(screenX > 1000){
-            if(Rect.intersects(player.getHitbox(), enemy4.getHitbox())){
-                hitDetected = true;
-                enemy4.setX(-300);
-            }
-        }
-        if(screenX > 1200){
-            if(Rect.intersects(player.getHitbox(), enemy5.getHitbox())){
-                hitDetected = true;
-                enemy5.setX(-300);
-            }
-        }
+        // if(screenX > 1000){
+        //     if(Rect.intersects(player.getHitbox(), enemy4.getHitbox())){
+        //        hitDetected = true;
+        //        enemy4.setX(-300);
+        //    }
+        // }
+        // if(screenX > 1200){
+        //    if(Rect.intersects(player.getHitbox(), enemy5.getHitbox())){
+        //        hitDetected = true;
+        //        enemy5.setX(-300);
+        //    }
+        // }
 
         if(hitDetected)
         {
@@ -237,28 +245,17 @@ public class FSView extends SurfaceView implements Runnable
             }
         }
 
-        //Update the player
-        player.update();
-
-        //Update the enemies
-        enemy1.update(player.getSpeed());
-        enemy2.update(player.getSpeed());
-        enemy3.update(player.getSpeed());
-
-        if(screenX > 1000)
+        // Update all objects in the game using their own methods
+        for (int i = 0; i < m_objects.m_allObjectList.size(); i++)
         {
-            enemy4.update(player.getSpeed());
+            m_objects.m_allObjectList.get(i).Update();
         }
-        if(screenX > 1200)
-        {
-        enemy5.update(player.getSpeed());
-    }
 
         //Update the space dust particles
-        for (SpaceDust sd : spaceDustList)
-        {
-            sd.update(player.getSpeed());
-        }
+        // for (SpaceDust sd : spaceDustList)
+        // {
+        //    sd.update();
+        // }
 
         if(!gameEnded)
         {
@@ -292,7 +289,7 @@ public class FSView extends SurfaceView implements Runnable
 
 
 
-    private void draw()
+    private void Draw()
     {
         if(ourHolder.getSurface().isValid())
         {
@@ -302,82 +299,57 @@ public class FSView extends SurfaceView implements Runnable
             //Erases last frame
             canvas.drawColor(Color.argb(255,0,0,0));
 
-
             //Code for debugging purposes
-
-            //Switch to white pixels
-            paint.setColor(Color.argb(255,255,255,255));
-
-            //Draw collision boxes
-            canvas.drawRect(
-                    player.getHitbox().left,
-                    player.getHitbox().top,
-                    player.getHitbox().right,
-                    player.getHitbox().bottom,
-                    paint);
-            canvas.drawRect(
-                    enemy1.getHitbox().left,
-                    enemy1.getHitbox().top,
-                    enemy1.getHitbox().right,
-                    enemy1.getHitbox().bottom,
-                    paint);
-            canvas.drawRect(
-                    enemy2.getHitbox().left,
-                    enemy2.getHitbox().top,
-                    enemy2.getHitbox().right,
-                    enemy2.getHitbox().bottom,
-                    paint);
-            canvas.drawRect(
-                    enemy3.getHitbox().left,
-                    enemy3.getHitbox().top,
-                    enemy3.getHitbox().right,
-                    enemy3.getHitbox().bottom,
-                    paint);
-
-
-            //Sets the colour of the space dust particles to white
             paint.setColor(Color.argb(255, 255, 255, 255));
 
-            //Draws the dust from our arrayList
-            for (SpaceDust sd : spaceDustList)
+            // Draws the dust from our arrayList
+            // for (SpaceDust sd : spaceDustList)
+            // {
+            //     canvas.drawPoint(sd.getX(), sd.getY(), paint);
+            // }
+
+            // Draws all of the Hit Box in the game for Debugging purposes
+            if (debugging)
             {
-                canvas.drawPoint(sd.getX(), sd.getY(), paint);
+                for (int i = 0; i < m_objects.m_allObjectList.size(); i++)
+                {
+                    canvas.drawRect(
+                            m_objects.m_allObjectList.get(i).getHitbox().left,
+                            m_objects.m_allObjectList.get(i).getHitbox().top,
+                            m_objects.m_allObjectList.get(i).getHitbox().right,
+                            m_objects.m_allObjectList.get(i).getHitbox().bottom,
+                            paint);
+                }
             }
 
-            //Draws the player
-            canvas.drawBitmap(
-                    player.getBitmap(),
-                    player.GetX(),
-                    player.GetY(),
-                    paint);
-
-            //Draws the enemies
-            canvas.drawBitmap(
-                    enemy1.getBitmap(),
-                    enemy1.GetX(),
-                    enemy1.GetY(),
-                    paint);
-            canvas.drawBitmap(
-                    enemy2.getBitmap(),
-                    enemy2.GetX(),
-                    enemy2.GetY(),
-                    paint);
-            canvas.drawBitmap(
-                    enemy3.getBitmap(),
-                    enemy3.GetX(),
-                    enemy3.GetY(),
-                    paint);
-
-            if(screenX > 1000)
+            // Draws all of the objects in the game
+            for (int i = 0; i < m_objects.m_allObjectList.size(); i++)
             {
-                canvas.drawBitmap(enemy4.getBitmap(),
-                        enemy4.GetX(), enemy4.GetY(), paint);
-            }if(screenX > 1200)
-            {
-            canvas.drawBitmap(enemy5.getBitmap(),
-                    enemy5.GetX(), enemy5.GetY(), paint);
-        }
+                if (m_objects.m_allObjectList.get(i).GetType() != SPACEDUST)
+                {
+                    canvas.drawBitmap(m_objects.m_allObjectList.get(i).getBitmap(),
+                            m_objects.m_allObjectList.get(i).GetX(),
+                            m_objects.m_allObjectList.get(i).GetY(),
+                            paint);
+                }
+                else
+                {
+                    canvas.drawPoint(m_objects.m_allObjectList.get(i).GetX(),
+                                     m_objects.m_allObjectList.get(i).GetY(),
+                                     paint);
+                }
+            }
 
+
+            // if(screenX > 1000)
+            // {
+            //    canvas.drawBitmap(enemy4.getBitmap(),
+            //            enemy4.GetX(), enemy4.GetY(), paint);
+            // }if(screenX > 1200)
+            // {
+            // canvas.drawBitmap(enemy5.getBitmap(),
+            //        enemy5.GetX(), enemy5.GetY(), paint);
+            //   }
 
             if(!gameEnded)
             {
@@ -470,30 +442,34 @@ public class FSView extends SurfaceView implements Runnable
         gameEnded = false;
 
         //Initialising the player ship object
-        player = new PlayerShip(context, screenX, screenY);
+        player = new PlayerShip(context, screenX, screenY, paint, canvas, ourHolder);
+        m_objects.AddItem(player, true);
 
         //Initialising the enemy ship objects
-        enemy1 = new EnemyShip(context, screenX, screenY);
-        enemy2 = new EnemyShip(context, screenX, screenY);
-        enemy3 = new EnemyShip(context, screenX, screenY);
+        enemy1 = new EnemyShip(context, screenX, screenY, player);
+        m_objects.AddItem(enemy1, true);
 
-        if(screenX > 1000)
-        {
-            enemy4 = new EnemyShip(context, screenX, screenY);
-        }
-        if(screenX > 1200)
-        {
-            enemy5 = new EnemyShip(context, screenX, screenY);
-        }
+        enemy2 = new EnemyShip(context, screenX, screenY, player);
+        m_objects.AddItem(enemy2, true);
+
+        enemy3 = new EnemyShip(context, screenX, screenY, player);
+        m_objects.AddItem(enemy3, true);
+
+        // if(screenX > 1000)
+        // {
+        //     enemy4 = new EnemyShip(context, screenX, screenY, player);
+        // }
+        // if(screenX > 1200)
+        // {
+        //    enemy5 = new EnemyShip(context, screenX, screenY, player);
+        // }
 
         //Initialising the space dust objects
-        int numSpecs = 200;
-
-        for (int i = 0; i < numSpecs; i++)
+        for (int i = 0; i < 200; i++)
         {
             //Allocates position for space dust to spawn
-            SpaceDust spec = new SpaceDust(screenX,screenY);
-            spaceDustList.add(spec);
+            SpaceDust spec = new SpaceDust(screenX, screenY, player);
+            m_objects.AddItem(spec, false);
         }
 
         //Resets the time and distance

@@ -2,25 +2,24 @@ package com.example.student.flappyspaceship;
 
 import java.util.Random;
 
+import static com.example.student.flappyspaceship.ObjectType.SPACEDUST;
 
 
-public class SpaceDust
+public class SpaceDust extends GameObject
 {
-    //integers that store the coordinates of the space dust particle
-    private int x, y;
+    // Has a copy of the players ship for use in logic
+    private PlayerShip m_PlayerShip;
+
     //integer that stores the speed at which the space dust particles move
     private int speed;
 
-    //integers that store the boundaries of the ship movement (X-axis)
-    private int maxX;
-    private int minX;
-    //integers that store the boundaries of the ship movement (Y-axis)
-    private int maxY;
-    private int minY;
-
     //Constructor for SpaceDust
-    public SpaceDust(int screenX, int screenY)
+    public SpaceDust(int screenX, int screenY, PlayerShip player)
     {
+        super(SPACEDUST);
+
+        // Assign the variable of the ship
+        m_PlayerShip = player;
         //Assigns the right x-axis boundary for the space dust
         maxX = screenX;
         //Assigns the top y-axis boundary for the space dust
@@ -43,10 +42,10 @@ public class SpaceDust
         y = generator.nextInt(maxY);
     }
 
-    public void update(int playerSpeed)
+    public void Update()
     {
         //Increases speed when the player ship increases speed
-        x -= playerSpeed;
+        x -= m_PlayerShip.getSpeed();
         x -= speed;
 
         //Respawns when the space dust is offscreen

@@ -55,7 +55,7 @@ public class GameActivity extends Activity
     protected void onPause()
     {
         super.onPause();
-        gameView.pause();
+        gameView.Pause();
     }
 
 
@@ -64,6 +64,6 @@ public class GameActivity extends Activity
     protected void onResume()
     {
         super.onResume();
-        gameView.resume();
+        gameView.Resume();
     }
 }

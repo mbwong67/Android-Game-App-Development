@@ -2,7 +2,11 @@ package com.example.student.flappyspaceship;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
+import android.view.SurfaceHolder;
 
 import static com.example.student.flappyspaceship.ObjectType.PLAYER;
 
@@ -24,9 +28,12 @@ public class PlayerShip extends GameObject
     private final int MAX_SPEED = 20;
     //integer that stores the strength of the shield of the player ship
     private int shieldStrength;
+    private Paint m_paint;
+    private Canvas m_canvas;
+    private SurfaceHolder m_holder;
 
     //Constructor for PlayerShip
-    public PlayerShip(Context context, int screenX, int screenY)
+    public PlayerShip(Context context, int screenX, int screenY, Paint paint, Canvas canvas, SurfaceHolder ourHolder)
     {
         super(PLAYER);
         //Assigns the starting x-coordinate of the player ship
@@ -48,10 +55,15 @@ public class PlayerShip extends GameObject
         hitBox = new Rect(x, y, bitmap.getWidth(), bitmap.getHeight());
         //Initialises the strength of the shield of the player ship
         shieldStrength = 2;
+
+        //Initialises the paint and canvas
+        m_paint = paint;
+        m_canvas = canvas;
+        m_holder = ourHolder;
     }
 
     //Updates the player ship
-    public void update()
+    public void Update()
     {
         //Are we boosting?
         if(boosting)
@@ -96,6 +108,21 @@ public class PlayerShip extends GameObject
         hitBox.top = y;
         hitBox.right = x + bitmap.getWidth();
         hitBox.bottom = y + bitmap.getHeight();
+    }
+
+    public void Draw()
+    {
+
+
+            //Draws the player
+            m_canvas.drawBitmap(
+                    this.getBitmap(),
+                    this.GetX(),
+                    this.GetY(),
+                    m_paint);
+
+
+
     }
 
     public void reduceShieldStrength()
