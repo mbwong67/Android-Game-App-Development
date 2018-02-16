@@ -32,10 +32,15 @@ public class PlayerShip extends GameObject
     private Canvas m_canvas;
     private SurfaceHolder m_holder;
 
+    public Context m_context;
+
     //Constructor for PlayerShip
     public PlayerShip(Context context, int screenX, int screenY, Paint paint, Canvas canvas, SurfaceHolder ourHolder)
     {
         super(PLAYER);
+
+        m_context = context;
+
         //Assigns the starting x-coordinate of the player ship
         x = 50;
         //Assigns the starting y-coordinate of the player ship

@@ -1,5 +1,7 @@
 package com.example.student.flappyspaceship;
 
+import android.graphics.Rect;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,12 +45,4 @@ public class ObjectManager
             m_allObjectList.get(i).Draw();
         }
     }
-
-    public void ProcessCollisions()
-    {
-
-    }
-
-
-
 }

@@ -6,5 +6,5 @@ package com.example.student.flappyspaceship;
 
 public enum ObjectType
 {
-    UNKNOWN, PLAYER, ENEMY, SPACEDUST;
+    PLAYER, ENEMY, SPACEDUST, BULLET;
 }

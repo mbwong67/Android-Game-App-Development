@@ -60,6 +60,7 @@ public class FSView extends SurfaceView implements Runnable
     public EnemyShip enemy1;
     public EnemyShip enemy2;
     public EnemyShip enemy3;
+    public Bullet bullet;
     // public EnemyShip enemy4;
     // public EnemyShip enemy5;
 
@@ -67,9 +68,6 @@ public class FSView extends SurfaceView implements Runnable
     private Paint paint;
     private Canvas canvas;
     private SurfaceHolder ourHolder;
-
-    //SpaceDust objects
-    public ArrayList<SpaceDust> spaceDustList = new ArrayList<SpaceDust>();
 
 
     public FSView(Context context, int x, int y)
@@ -96,10 +94,10 @@ public class FSView extends SurfaceView implements Runnable
 
         try
         {
-//Create objects of the 2 required classes
+            //Create objects of the 2 required classes
             AssetManager assetManager = context.getAssets();
             AssetFileDescriptor descriptor;
-//create our three fx in memory ready for use
+            //create our three fx in memory ready for use
             descriptor = assetManager.openFd("start.ogg");
             start = soundPool.load(descriptor, 0);
             descriptor = assetManager.openFd("win.ogg");
@@ -110,7 +108,7 @@ public class FSView extends SurfaceView implements Runnable
             //explosion = soundPool.load(descriptor, 0);
         }catch(IOException e)
         {
-//Print an error message to the console
+            //Print an error message to the console
             Log.e("error", "failed to load sound files");
         }
 
@@ -191,35 +189,28 @@ public class FSView extends SurfaceView implements Runnable
 
     private void Update()
     {
-
-
         //Collision detection on new positions,
         //checking last frames position which has just been drawn
 
         //Images in excess of 100 pixels wide
         //use the -100 value accordingly
 
+        bullet = new Bullet(context, player.GetX(), player.GetY(), screenX);
+        m_objects.AddItem(bullet, false);
+
         //boolean to register a hit
         boolean hitDetected = false;
 
-        if(Rect.intersects
-                (player.getHitbox(), enemy1.getHitbox()))
+        // Hit Detection
+        for (int i = 1; i < m_objects.m_colliderList.size(); i++)
         {
-            hitDetected = true;
-            enemy1.setX(-300);
+            if(Rect.intersects(player.getHitbox(), m_objects.m_colliderList.get(i).getHitbox()))
+            {
+                hitDetected = true;
+                m_objects.m_colliderList.get(i).setX(-300);
+            }
         }
-        if(Rect.intersects
-                (player.getHitbox(), enemy2.getHitbox()))
-        {
-            hitDetected = true;
-            enemy2.setX(-300);
-        }
-        if(Rect.intersects
-                (player.getHitbox(), enemy3.getHitbox()))
-        {
-            hitDetected = true;
-            enemy3.setX(-300);
-        }
+
 
         // if(screenX > 1000){
         //     if(Rect.intersects(player.getHitbox(), enemy4.getHitbox())){
@@ -249,6 +240,14 @@ public class FSView extends SurfaceView implements Runnable
         for (int i = 0; i < m_objects.m_allObjectList.size(); i++)
         {
             m_objects.m_allObjectList.get(i).Update();
+        }
+
+        for (int i = 0; i < m_objects.m_allObjectList.size(); i++)
+        {
+            if (m_objects.m_allObjectList.get(i).GetX() > screenX)
+            {
+                m_objects.m_allObjectList.remove(i);
+            }
         }
 
         //Update the space dust particles
@@ -440,6 +439,10 @@ public class FSView extends SurfaceView implements Runnable
     {
         //Initialising the gameEnded boolean
         gameEnded = false;
+
+        // Clear the lists on a new game
+        m_objects.m_colliderList.clear();
+        m_objects.m_allObjectList.clear();
 
         //Initialising the player ship object
         player = new PlayerShip(context, screenX, screenY, paint, canvas, ourHolder);
