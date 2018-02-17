@@ -32,6 +32,11 @@ public class PlayerShip extends GameObject
     private Canvas m_canvas;
     private SurfaceHolder m_holder;
 
+    // Shooting variables
+    public Bullet bullet;
+    private float m_shootingDelay;
+
+    public int maxX;
     public Context m_context;
 
     //Constructor for PlayerShip
@@ -39,7 +44,9 @@ public class PlayerShip extends GameObject
     {
         super(PLAYER);
 
+        maxX = screenX;
         m_context = context;
+        m_shootingDelay = 7.0f;
 
         //Assigns the starting x-coordinate of the player ship
         x = 50;
@@ -70,6 +77,14 @@ public class PlayerShip extends GameObject
     //Updates the player ship
     public void Update()
     {
+        --m_shootingDelay;
+        if (m_shootingDelay <= 0.0f)
+        {
+            bullet = new Bullet(m_context, this.GetX(), this.GetY(), maxX);
+            ObjectManager.GetInstance().AddItem(bullet, false);
+            m_shootingDelay = 7.0f;
+        }
+
         //Are we boosting?
         if(boosting)
         {

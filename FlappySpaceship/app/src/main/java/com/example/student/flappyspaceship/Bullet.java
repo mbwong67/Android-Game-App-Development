@@ -24,6 +24,7 @@ public class Bullet extends GameObject
         maxX = screenX;
 
         bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.bullet);
+
     }
 
     public void Update()

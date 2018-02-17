@@ -11,14 +11,26 @@ import java.util.List;
 
 public class ObjectManager
 {
+    // Make it a singleton
+    private static ObjectManager instance;
 
     public ArrayList<GameObject> m_allObjectList = new ArrayList<GameObject>();
     public ArrayList<GameObject> m_colliderList = new ArrayList<GameObject>();
 
-    public ObjectManager()
+    private ObjectManager()
     {
 
     }
+
+    public static ObjectManager GetInstance()
+    {
+        if(instance == null)
+        {
+            instance = new ObjectManager();
+        }
+        return instance;
+    }
+
 
     public void AddItem(GameObject newItem, boolean collides)
     {

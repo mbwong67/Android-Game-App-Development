@@ -30,9 +30,6 @@ public class FSView extends SurfaceView implements Runnable
 
     private Context context;
 
-    // Manages all of the objects in the game
-    public ObjectManager m_objects;
-
     //objects and integers to store the sound assets
     private SoundPool soundPool;
     private int start = -1;
@@ -60,7 +57,6 @@ public class FSView extends SurfaceView implements Runnable
     public EnemyShip enemy1;
     public EnemyShip enemy2;
     public EnemyShip enemy3;
-    public Bullet bullet;
     // public EnemyShip enemy4;
     // public EnemyShip enemy5;
 
@@ -75,8 +71,6 @@ public class FSView extends SurfaceView implements Runnable
         super(context);
         this.context = context;
 
-        // Instantiate the ObjectManager
-        m_objects = new ObjectManager();
 
         // Get a reference to a file called HiScores.
         // If id doesn't exist one is created
@@ -195,19 +189,17 @@ public class FSView extends SurfaceView implements Runnable
         //Images in excess of 100 pixels wide
         //use the -100 value accordingly
 
-        bullet = new Bullet(context, player.GetX(), player.GetY(), screenX);
-        m_objects.AddItem(bullet, false);
 
         //boolean to register a hit
         boolean hitDetected = false;
 
         // Hit Detection
-        for (int i = 1; i < m_objects.m_colliderList.size(); i++)
+        for (int i = 1; i < ObjectManager.GetInstance().m_colliderList.size(); i++)
         {
-            if(Rect.intersects(player.getHitbox(), m_objects.m_colliderList.get(i).getHitbox()))
+            if(Rect.intersects(player.getHitbox(), ObjectManager.GetInstance().m_colliderList.get(i).getHitbox()))
             {
                 hitDetected = true;
-                m_objects.m_colliderList.get(i).setX(-300);
+                ObjectManager.GetInstance().m_colliderList.get(i).setX(-300);
             }
         }
 
@@ -237,16 +229,16 @@ public class FSView extends SurfaceView implements Runnable
         }
 
         // Update all objects in the game using their own methods
-        for (int i = 0; i < m_objects.m_allObjectList.size(); i++)
+        for (int i = 0; i < ObjectManager.GetInstance().m_allObjectList.size(); i++)
         {
-            m_objects.m_allObjectList.get(i).Update();
+            ObjectManager.GetInstance().m_allObjectList.get(i).Update();
         }
 
-        for (int i = 0; i < m_objects.m_allObjectList.size(); i++)
+        for (int i = 0; i < ObjectManager.GetInstance().m_allObjectList.size(); i++)
         {
-            if (m_objects.m_allObjectList.get(i).GetX() > screenX)
+            if (ObjectManager.GetInstance().m_allObjectList.get(i).GetX() > screenX)
             {
-                m_objects.m_allObjectList.remove(i);
+                ObjectManager.GetInstance().m_allObjectList.remove(i);
             }
         }
 
@@ -310,31 +302,32 @@ public class FSView extends SurfaceView implements Runnable
             // Draws all of the Hit Box in the game for Debugging purposes
             if (debugging)
             {
-                for (int i = 0; i < m_objects.m_allObjectList.size(); i++)
+                for (int i = 0; i < ObjectManager.GetInstance().m_allObjectList.size(); i++)
                 {
                     canvas.drawRect(
-                            m_objects.m_allObjectList.get(i).getHitbox().left,
-                            m_objects.m_allObjectList.get(i).getHitbox().top,
-                            m_objects.m_allObjectList.get(i).getHitbox().right,
-                            m_objects.m_allObjectList.get(i).getHitbox().bottom,
+                            ObjectManager.GetInstance().m_allObjectList.get(i).getHitbox().left,
+                            ObjectManager.GetInstance().m_allObjectList.get(i).getHitbox().top,
+                            ObjectManager.GetInstance().m_allObjectList.get(i).getHitbox().right,
+                            ObjectManager.GetInstance().m_allObjectList.get(i).getHitbox().bottom,
                             paint);
                 }
             }
 
             // Draws all of the objects in the game
-            for (int i = 0; i < m_objects.m_allObjectList.size(); i++)
+            for (int i = 0; i < ObjectManager.GetInstance().m_allObjectList.size(); i++)
             {
-                if (m_objects.m_allObjectList.get(i).GetType() != SPACEDUST)
+                if (ObjectManager.GetInstance().m_allObjectList.get(i).GetType() != SPACEDUST)
                 {
-                    canvas.drawBitmap(m_objects.m_allObjectList.get(i).getBitmap(),
-                            m_objects.m_allObjectList.get(i).GetX(),
-                            m_objects.m_allObjectList.get(i).GetY(),
+                    canvas.drawBitmap(ObjectManager.GetInstance().m_allObjectList.get(i).getBitmap(),
+                            ObjectManager.GetInstance().m_allObjectList.get(i).GetX(),
+                            ObjectManager.GetInstance().m_allObjectList.get(i).GetY(),
                             paint);
+
                 }
                 else
                 {
-                    canvas.drawPoint(m_objects.m_allObjectList.get(i).GetX(),
-                                     m_objects.m_allObjectList.get(i).GetY(),
+                    canvas.drawPoint(ObjectManager.GetInstance().m_allObjectList.get(i).GetX(),
+                            ObjectManager.GetInstance().m_allObjectList.get(i).GetY(),
                                      paint);
                 }
             }
@@ -441,22 +434,22 @@ public class FSView extends SurfaceView implements Runnable
         gameEnded = false;
 
         // Clear the lists on a new game
-        m_objects.m_colliderList.clear();
-        m_objects.m_allObjectList.clear();
+        ObjectManager.GetInstance().m_colliderList.clear();
+        ObjectManager.GetInstance().m_allObjectList.clear();
 
         //Initialising the player ship object
         player = new PlayerShip(context, screenX, screenY, paint, canvas, ourHolder);
-        m_objects.AddItem(player, true);
+        ObjectManager.GetInstance().AddItem(player, true);
 
         //Initialising the enemy ship objects
         enemy1 = new EnemyShip(context, screenX, screenY, player);
-        m_objects.AddItem(enemy1, true);
+        ObjectManager.GetInstance().AddItem(enemy1, true);
 
         enemy2 = new EnemyShip(context, screenX, screenY, player);
-        m_objects.AddItem(enemy2, true);
+        ObjectManager.GetInstance().AddItem(enemy2, true);
 
         enemy3 = new EnemyShip(context, screenX, screenY, player);
-        m_objects.AddItem(enemy3, true);
+        ObjectManager.GetInstance().AddItem(enemy3, true);
 
         // if(screenX > 1000)
         // {
@@ -472,7 +465,7 @@ public class FSView extends SurfaceView implements Runnable
         {
             //Allocates position for space dust to spawn
             SpaceDust spec = new SpaceDust(screenX, screenY, player);
-            m_objects.AddItem(spec, false);
+            ObjectManager.GetInstance().AddItem(spec, false);
         }
 
         //Resets the time and distance
