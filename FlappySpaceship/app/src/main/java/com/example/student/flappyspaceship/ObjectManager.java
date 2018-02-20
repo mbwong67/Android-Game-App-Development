@@ -46,7 +46,10 @@ public class ObjectManager
     {
         for (int i = 0; i < m_allObjectList.size(); i++)
         {
-            m_allObjectList.get(i).Update();
+            if (m_allObjectList.get(i).IsActive())
+            {
+                m_allObjectList.get(i).Update();
+            }
         }
     }
 
@@ -58,14 +61,40 @@ public class ObjectManager
         }
     }
 
-    public void ObjectsCollision()
+    public void DeleteInactiveItems()
     {
-        for (int i = 0; i < m_colliderList.size(); i++)
+        for (int i = 0; i < m_allObjectList.size(); ++i)
         {
-            if (m_colliderList.get(i).GetActive() == false)
+            if (!m_allObjectList.get(i).IsActive())
+            {
+                m_allObjectList.remove(i);
+            }
+        }
+
+        for (int i = 0; i < m_colliderList.size(); ++i)
+        {
+            if (!m_colliderList.get(i).IsActive())
             {
                 m_colliderList.remove(i);
-                m_allObjectList.remove(i);
+            }
+        }
+    }
+
+    public void ProcessCollisions()
+    {
+        for (int i = 0; i < m_colliderList.size(); ++i)
+        {
+            for (int j = 1; j < m_colliderList.size(); ++j)
+            {
+                if (m_colliderList.get(i).IsActive() && m_colliderList.get(j).IsActive())
+                {
+                    // if (m_colliderList.get(i).HasCollided(m_allObjectList.get(j)))
+                    if((Rect.intersects(m_colliderList.get(i).getHitbox(), m_colliderList.get(j).getHitbox())))
+                    {
+                        m_colliderList.get(i).ProcessCollision(m_colliderList.get(j));
+                        m_colliderList.get(j).ProcessCollision(m_colliderList.get(i));
+                    }
+                }
             }
         }
     }

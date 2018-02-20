@@ -3,6 +3,8 @@ package com.example.student.flappyspaceship;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 
+import static com.example.student.flappyspaceship.ObjectType.ENEMY;
+
 /**
  * GameObject :: The base in which all objects inherit.
  * Created by Jonathon Tyson & Cristian Murarescu on 16/02/2018.
@@ -81,14 +83,26 @@ public abstract class GameObject
         return hitBox;
     }
 
-    public Boolean GetActive()
+    public boolean IsActive()
     {
         return m_active;
     }
 
-    public void SetActive(boolean setActive)
+    public void Deactivate()
     {
-        m_active = setActive;
+        m_active = false;
+    }
+
+    public void ProcessCollision(GameObject other) {}
+
+    public boolean HasCollided(GameObject other)
+    {
+        boolean checkThis = false;
+        if ((m_active) && (other.m_active) && Rect.intersects(this.getHitbox(), other.getHitbox()))
+        {
+            checkThis = true;
+        }
+        return checkThis;
     }
 
 }

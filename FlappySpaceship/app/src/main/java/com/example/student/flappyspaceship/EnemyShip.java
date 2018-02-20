@@ -4,9 +4,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
+import android.media.MediaPlayer;
 
 import java.util.Random;
 
+import static com.example.student.flappyspaceship.ObjectType.BULLET;
 import static com.example.student.flappyspaceship.ObjectType.ENEMY;
 
 /**
@@ -18,17 +20,19 @@ public class EnemyShip extends GameObject
 {
     // Has a copy of the players ship for use in logic
     private PlayerShip m_PlayerShip;
+    final MediaPlayer m_MediaDestroyed;
 
     //integer that stores the speed of the ship
     private int speed = 1;
 
     //Constructor for EnemyShip
-    public EnemyShip(Context context, int screenX, int screenY, PlayerShip player)
+    public EnemyShip(Context context, int screenX, int screenY, PlayerShip player, MediaPlayer media)
     {
         // Determines the type of the GameObject
         super(ENEMY);
 
         m_PlayerShip = player;
+        m_MediaDestroyed = media;
 
         //Creates an instance of the Random object
         Random generator = new Random();
@@ -105,6 +109,14 @@ public class EnemyShip extends GameObject
         hitBox.bottom = y + bitmap.getHeight();
     }
 
+    public void ProcessCollision(GameObject other)
+    {
+        if (other.GetType() == BULLET)
+        {
+            m_MediaDestroyed.start();
+            setX(-300);
+        }
+    }
 
     public void scaleBitmap(int x){
         if(x < 1000) {

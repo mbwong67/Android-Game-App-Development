@@ -33,6 +33,7 @@ public class FSView extends SurfaceView implements Runnable
     final MediaPlayer killedEnemySound;
     final MediaPlayer gameOverSound;
     final MediaPlayer winSound;
+    final MediaPlayer bulletSound;
 
     private boolean debugging = false;
 
@@ -78,9 +79,10 @@ public class FSView extends SurfaceView implements Runnable
 
         //initialising the media players for the game sounds
         gameOnSound = MediaPlayer.create(context,R.raw.gameon);
-        killedEnemySound = MediaPlayer.create(context,R.raw.killedenemy);
+        killedEnemySound = MediaPlayer.create(context,R.raw.explosion1);
         gameOverSound = MediaPlayer.create(context,R.raw.gameover);
         winSound = MediaPlayer.create(context,R.raw.win);
+        bulletSound = MediaPlayer.create(context,R.raw.shoot);
 
         // Get a reference to a file called HiScores.
         // If id doesn't exist one is created
@@ -170,6 +172,10 @@ public class FSView extends SurfaceView implements Runnable
 
     private void Update()
     {
+        ObjectManager.GetInstance().UpdateAll();
+        ObjectManager.GetInstance().ProcessCollisions();
+        ObjectManager.GetInstance().DeleteInactiveItems();
+
         //Collision detection on new positions,
         //checking last frames position which has just been drawn
 
@@ -193,15 +199,7 @@ public class FSView extends SurfaceView implements Runnable
         //boolean to register a hit
         boolean hitDetected = false;
 
-        // Hit Detection
-        for (int i = 1; i < ObjectManager.GetInstance().m_colliderList.size(); i++)
-        {
-            if((Rect.intersects(player.getHitbox(), ObjectManager.GetInstance().m_colliderList.get(i).getHitbox())) && ObjectManager.GetInstance().m_colliderList.get(i).GetType() == ENEMY)
-            {
-                hitDetected = true;
-                ObjectManager.GetInstance().m_colliderList.get(i).setX(-300);
-            }
-        }
+
 
         // if(screenX > 1000){
         //     if(Rect.intersects(player.getHitbox(), enemy4.getHitbox())){
@@ -216,32 +214,8 @@ public class FSView extends SurfaceView implements Runnable
         //    }
         // }
 
-        if(hitDetected)
-        {
-            //soundPool.play(bump, 1, 1, 0, 0, 1);
-            killedEnemySound.start();
-            player.reduceShieldStrength();
-            if(player.getShieldStrength() < 0)
-            {
-                //soundPool.play(destroyed, 1, 1, 0, 0, 1);
 
-                gameEnded = true;
-            }
-        }
 
-        // Update all objects in the game using their own methods
-        for (int i = 0; i < ObjectManager.GetInstance().m_allObjectList.size(); i++)
-        {
-            ObjectManager.GetInstance().m_allObjectList.get(i).Update();
-        }
-
-        for (int i = 0; i < ObjectManager.GetInstance().m_allObjectList.size(); i++)
-        {
-            if (ObjectManager.GetInstance().m_allObjectList.get(i).GetX() > screenX)
-            {
-                ObjectManager.GetInstance().m_allObjectList.remove(i);
-            }
-        }
 
         // ObjectManager.GetInstance().ObjectsCollision();
 
@@ -307,13 +281,13 @@ public class FSView extends SurfaceView implements Runnable
             // Draws all of the hit box in the game for Debugging purposes
             if (debugging)
             {
-                for (int i = 0; i < ObjectManager.GetInstance().m_allObjectList.size(); i++)
+                for (int i = 0; i < ObjectManager.GetInstance().m_colliderList.size(); i++)
                 {
                     canvas.drawRect(
-                            ObjectManager.GetInstance().m_allObjectList.get(i).getHitbox().left,
-                            ObjectManager.GetInstance().m_allObjectList.get(i).getHitbox().top,
-                            ObjectManager.GetInstance().m_allObjectList.get(i).getHitbox().right,
-                            ObjectManager.GetInstance().m_allObjectList.get(i).getHitbox().bottom,
+                            ObjectManager.GetInstance().m_colliderList.get(i).getHitbox().left,
+                            ObjectManager.GetInstance().m_colliderList.get(i).getHitbox().top,
+                            ObjectManager.GetInstance().m_colliderList.get(i).getHitbox().right,
+                            ObjectManager.GetInstance().m_colliderList.get(i).getHitbox().bottom,
                             paint);
                 }
             }
@@ -331,9 +305,12 @@ public class FSView extends SurfaceView implements Runnable
                 }
                 else
                 {
-                    canvas.drawPoint(ObjectManager.GetInstance().m_allObjectList.get(i).GetX(),
-                            ObjectManager.GetInstance().m_allObjectList.get(i).GetY(),
-                                     paint);
+                    if (ObjectManager.GetInstance().m_allObjectList.get(i).IsActive())
+                    {
+                        canvas.drawPoint(ObjectManager.GetInstance().m_allObjectList.get(i).GetX(),
+                                ObjectManager.GetInstance().m_allObjectList.get(i).GetY(),
+                                paint);
+                    }
                 }
             }
 
@@ -446,17 +423,17 @@ public class FSView extends SurfaceView implements Runnable
         ObjectManager.GetInstance().m_allObjectList.clear();
 
         //Initialising the player ship object
-        player = new PlayerShip(context, screenX, screenY, paint, canvas, ourHolder);
+        player = new PlayerShip(context, screenX, screenY, paint, canvas, ourHolder, bulletSound);
         ObjectManager.GetInstance().AddItem(player, true);
 
         //Initialising the enemy ship objects
-        enemy1 = new EnemyShip(context, screenX, screenY, player);
+        enemy1 = new EnemyShip(context, screenX, screenY, player, killedEnemySound);
         ObjectManager.GetInstance().AddItem(enemy1, true);
 
-        enemy2 = new EnemyShip(context, screenX, screenY, player);
+        enemy2 = new EnemyShip(context, screenX, screenY, player, killedEnemySound);
         ObjectManager.GetInstance().AddItem(enemy2, true);
 
-        enemy3 = new EnemyShip(context, screenX, screenY, player);
+        enemy3 = new EnemyShip(context, screenX, screenY, player, killedEnemySound);
         ObjectManager.GetInstance().AddItem(enemy3, true);
 
         // if(screenX > 1000)

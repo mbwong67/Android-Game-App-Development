@@ -7,8 +7,11 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.media.MediaPlayer;
 import android.view.SurfaceHolder;
 
+import static com.example.student.flappyspaceship.ObjectType.BULLET;
+import static com.example.student.flappyspaceship.ObjectType.ENEMY;
 import static com.example.student.flappyspaceship.ObjectType.PLAYER;
 
 /**
@@ -33,6 +36,8 @@ public class PlayerShip extends GameObject
     private Canvas m_canvas;
     private SurfaceHolder m_holder;
 
+    final MediaPlayer m_shootingSound;
+
     private int reqY;
     private boolean reqPos;
 
@@ -44,13 +49,14 @@ public class PlayerShip extends GameObject
     public Context m_context;
 
     //Constructor for PlayerShip
-    public PlayerShip(Context context, int screenX, int screenY, Paint paint, Canvas canvas, SurfaceHolder ourHolder)
+    public PlayerShip(Context context, int screenX, int screenY, Paint paint, Canvas canvas, SurfaceHolder ourHolder, MediaPlayer shooting)
     {
         super(PLAYER);
 
         maxX = screenX;
         m_context = context;
-        m_shootingDelay = 7.0f;
+        m_shootingDelay = 15.0f;
+        m_shootingSound = shooting;
 
         //Assigns the starting x-coordinate of the player ship
         x = 50;
@@ -84,9 +90,10 @@ public class PlayerShip extends GameObject
         --m_shootingDelay;
         if (m_shootingDelay <= 0.0f)
         {
-            bullet = new Bullet(m_context, this.GetX()+150, this.GetY()+82, maxX);
+            bullet = new Bullet(m_context, this.GetX()+150, this.GetY()+82);
+            m_shootingSound.start();
             ObjectManager.GetInstance().AddItem(bullet, true);
-            m_shootingDelay = 7.0f;
+            m_shootingDelay = 15.0f;
         }
 
         if (reqPos == false)
@@ -127,6 +134,21 @@ public class PlayerShip extends GameObject
 
 
 
+    }
+
+    public void ProcessCollision(GameObject other)
+    {
+        if (other.GetType() == ENEMY)
+        {
+            //soundPool.play(bump, 1, 1, 0, 0, 1);
+            // killedEnemySound.start();
+            reduceShieldStrength();
+            if(getShieldStrength() < 0)
+            {
+                //soundPool.play(destroyed, 1, 1, 0, 0, 1);
+                // gameEnded = true;
+            }
+        }
     }
 
     public void reduceShieldStrength()
