@@ -28,6 +28,8 @@ public abstract class GameObject
     // Determines the type of the object
     protected ObjectType TYPE;
 
+    protected boolean m_active;
+
     public void Update()
     {
 
@@ -42,6 +44,7 @@ public abstract class GameObject
     public GameObject(ObjectType type)
     {
      TYPE = type;
+     m_active = true;
     }
 
     public int GetX()
@@ -76,6 +79,16 @@ public abstract class GameObject
     public Rect getHitbox()
     {
         return hitBox;
+    }
+
+    public Boolean GetActive()
+    {
+        return m_active;
+    }
+
+    public void SetActive(boolean setActive)
+    {
+        m_active = setActive;
     }
 
 }

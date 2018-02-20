@@ -57,4 +57,16 @@ public class ObjectManager
             m_allObjectList.get(i).Draw();
         }
     }
+
+    public void ObjectsCollision()
+    {
+        for (int i = 0; i < m_colliderList.size(); i++)
+        {
+            if (m_colliderList.get(i).GetActive() == false)
+            {
+                m_colliderList.remove(i);
+                m_allObjectList.remove(i);
+            }
+        }
+    }
 }

@@ -44,9 +44,7 @@ public class SpaceDust extends GameObject
 
     public void Update()
     {
-        //Increases speed when the player ship increases speed
-        x -= m_PlayerShip.getSpeed();
-        x -= speed;
+
 
         //Respawns when the space dust is offscreen
         if(x < 0)
