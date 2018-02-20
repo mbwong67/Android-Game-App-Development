@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.view.SurfaceHolder;
 
@@ -31,6 +32,9 @@ public class PlayerShip extends GameObject
     private Paint m_paint;
     private Canvas m_canvas;
     private SurfaceHolder m_holder;
+
+    private int reqY;
+    private boolean reqPos;
 
     // Shooting variables
     public Bullet bullet;
@@ -80,47 +84,25 @@ public class PlayerShip extends GameObject
         --m_shootingDelay;
         if (m_shootingDelay <= 0.0f)
         {
-            bullet = new Bullet(m_context, this.GetX(), this.GetY(), maxX);
-            ObjectManager.GetInstance().AddItem(bullet, false);
+            bullet = new Bullet(m_context, this.GetX()+150, this.GetY()+82, maxX);
+            ObjectManager.GetInstance().AddItem(bullet, true);
             m_shootingDelay = 7.0f;
         }
 
-        //Are we boosting?
-        if(boosting)
+        if (reqPos == false)
         {
-            //Increases speed
-            speed += 2;
-        }else
-        {
-            //Decreases speed
-            speed -= 5;
-        }
-
-        //Constrains max speed
-        if(speed > MAX_SPEED)
-        {
-            speed = MAX_SPEED;
-        }
-
-        //Constrains min speed
-        if (speed < MIN_SPEED)
-        {
-            speed = MIN_SPEED;
-        }
-
-        //Moves the ship up or down
-        y -= speed + GRAVITY;
-
-        //Keeps the ship within the screen top y-axis boundary
-        if (y < minY)
-        {
-            y = minY;
-        }
-
-        //Keeps the ship within the screen bottom y-axis boundary
-        if (y > maxY)
-        {
-            y = maxY;
+            if(reqY < (y-15))
+            {
+                y -= 15;
+            }
+            else if (reqY > (y+15))
+            {
+                y += 15;
+            }
+            else if (reqY == y)
+            {
+                reqPos = true;
+            }
         }
 
         //Updates the collision box location for the player ship
@@ -129,6 +111,8 @@ public class PlayerShip extends GameObject
         hitBox.right = x + bitmap.getWidth();
         hitBox.bottom = y + bitmap.getHeight();
     }
+
+
 
     public void Draw()
     {
@@ -171,4 +155,25 @@ public class PlayerShip extends GameObject
     {
         boosting = false;
     }
+
+    public void setX(int xVar)
+    {
+        x = xVar;
+    }
+
+    public void setY(int yVar)
+    {
+        reqPos = false;
+        reqY = yVar;
+    }
+
+    public int getX()
+    {
+        return x;
+    }
+    public int getY()
+    {
+        return y;
+    }
+
 }

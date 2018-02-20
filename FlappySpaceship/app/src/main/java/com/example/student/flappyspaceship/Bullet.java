@@ -2,6 +2,7 @@ package com.example.student.flappyspaceship;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 
 import static com.example.student.flappyspaceship.ObjectType.BULLET;
 
@@ -25,6 +26,7 @@ public class Bullet extends GameObject
 
         bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.bullet);
 
+        hitBox = new Rect(x, y, bitmap.getWidth(), bitmap.getHeight());
     }
 
     public void Update()

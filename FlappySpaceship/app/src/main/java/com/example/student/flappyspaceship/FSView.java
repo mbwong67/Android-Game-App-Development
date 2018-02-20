@@ -7,9 +7,12 @@ import android.content.res.AssetManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.SoundPool;
+import android.os.Debug;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -18,23 +21,25 @@ import android.view.SurfaceView;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static com.example.student.flappyspaceship.ObjectType.BULLET;
+import static com.example.student.flappyspaceship.ObjectType.ENEMY;
 import static com.example.student.flappyspaceship.ObjectType.SPACEDUST;
 
 
 public class FSView extends SurfaceView implements Runnable
 {
+    //MediaPlayer objects to configure sounds
+    static MediaPlayer gameOnSound;
+    final MediaPlayer killedEnemySound;
+    final MediaPlayer gameOverSound;
+    final MediaPlayer winSound;
+
     private boolean debugging = false;
 
     private SharedPreferences prefs;
     private SharedPreferences.Editor editor;
 
     private Context context;
-
-    //objects and integers to store the sound assets
-    private SoundPool soundPool;
-    private int start = -1;
-    private int bump = -1;
-    private int win = -1;
 
     //boolean that checks if the game has ended
     private boolean gameEnded;
@@ -71,6 +76,11 @@ public class FSView extends SurfaceView implements Runnable
         super(context);
         this.context = context;
 
+        //initialising the media players for the game sounds
+        gameOnSound = MediaPlayer.create(context,R.raw.gameon);
+        killedEnemySound = MediaPlayer.create(context,R.raw.killedenemy);
+        gameOverSound = MediaPlayer.create(context,R.raw.gameover);
+        winSound = MediaPlayer.create(context,R.raw.win);
 
         // Get a reference to a file called HiScores.
         // If id doesn't exist one is created
@@ -82,29 +92,6 @@ public class FSView extends SurfaceView implements Runnable
         // labeled "fastestTime"
         // if not available high score = 1000000
         fastestTime = prefs.getLong("fastestTime", 1000000);
-
-        //This SoundPool is deprecated but don't worry
-        soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
-
-        try
-        {
-            //Create objects of the 2 required classes
-            AssetManager assetManager = context.getAssets();
-            AssetFileDescriptor descriptor;
-            //create our three fx in memory ready for use
-            descriptor = assetManager.openFd("start.ogg");
-            start = soundPool.load(descriptor, 0);
-            descriptor = assetManager.openFd("win.ogg");
-            win = soundPool.load(descriptor, 0);
-            descriptor = assetManager.openFd("bump.ogg");
-            bump = soundPool.load(descriptor, 0);
-            //descriptor = assetManager.openFd("explosion.ogg");
-            //explosion = soundPool.load(descriptor, 0);
-        }catch(IOException e)
-        {
-            //Print an error message to the console
-            Log.e("error", "failed to load sound files");
-        }
 
         //Initialising screen boundaries
         screenX = x;
@@ -190,19 +177,31 @@ public class FSView extends SurfaceView implements Runnable
         //use the -100 value accordingly
 
 
+        if (gameEnded)
+        {
+            gameOnSound.stop();
+            gameOverSound.start();
+            gameOverSound.stop();
+        }
+        else
+        {
+            gameOnSound.start();
+        }
+
+
+
         //boolean to register a hit
         boolean hitDetected = false;
 
         // Hit Detection
         for (int i = 1; i < ObjectManager.GetInstance().m_colliderList.size(); i++)
         {
-            if(Rect.intersects(player.getHitbox(), ObjectManager.GetInstance().m_colliderList.get(i).getHitbox()))
+            if((Rect.intersects(player.getHitbox(), ObjectManager.GetInstance().m_colliderList.get(i).getHitbox())) && ObjectManager.GetInstance().m_colliderList.get(i).GetType() == ENEMY)
             {
                 hitDetected = true;
                 ObjectManager.GetInstance().m_colliderList.get(i).setX(-300);
             }
         }
-
 
         // if(screenX > 1000){
         //     if(Rect.intersects(player.getHitbox(), enemy4.getHitbox())){
@@ -219,11 +218,13 @@ public class FSView extends SurfaceView implements Runnable
 
         if(hitDetected)
         {
-            soundPool.play(bump, 1, 1, 0, 0, 1);
+            //soundPool.play(bump, 1, 1, 0, 0, 1);
+            killedEnemySound.start();
             player.reduceShieldStrength();
             if(player.getShieldStrength() < 0)
             {
                 //soundPool.play(destroyed, 1, 1, 0, 0, 1);
+
                 gameEnded = true;
             }
         }
@@ -242,6 +243,8 @@ public class FSView extends SurfaceView implements Runnable
             }
         }
 
+        // ObjectManager.GetInstance().ObjectsCollision();
+
         //Update the space dust particles
         // for (SpaceDust sd : spaceDustList)
         // {
@@ -250,6 +253,7 @@ public class FSView extends SurfaceView implements Runnable
 
         if(!gameEnded)
         {
+
             //subtract distance to home planet based on current speed
             distanceRemaining -= player.getSpeed();
 
@@ -260,7 +264,8 @@ public class FSView extends SurfaceView implements Runnable
         //Completed the game!
         if(distanceRemaining < 0)
         {
-            soundPool.play(win, 1, 1, 0, 0, 1);
+            winSound.start();
+            winSound.stop();
             //Checks for new fastest time
             if(timeTaken < fastestTime)
             {
@@ -299,7 +304,7 @@ public class FSView extends SurfaceView implements Runnable
             //     canvas.drawPoint(sd.getX(), sd.getY(), paint);
             // }
 
-            // Draws all of the Hit Box in the game for Debugging purposes
+            // Draws all of the hit box in the game for Debugging purposes
             if (debugging)
             {
                 for (int i = 0; i < ObjectManager.GetInstance().m_allObjectList.size(); i++)
@@ -433,6 +438,9 @@ public class FSView extends SurfaceView implements Runnable
         //Initialising the gameEnded boolean
         gameEnded = false;
 
+        //starting the game music as the game starts
+        gameOnSound.start();
+
         // Clear the lists on a new game
         ObjectManager.GetInstance().m_colliderList.clear();
         ObjectManager.GetInstance().m_allObjectList.clear();
@@ -469,14 +477,11 @@ public class FSView extends SurfaceView implements Runnable
         }
 
         //Resets the time and distance
-        distanceRemaining = 10000;  //10 km
+        distanceRemaining = 1000;  //1 km
         timeTaken = 0;
 
         //Get start time
         timeStarted = System.currentTimeMillis();
-
-        //Plays the sound pool
-        soundPool.play(start, 1, 1,0,0,1);
     }
 
 
@@ -506,7 +511,7 @@ public class FSView extends SurfaceView implements Runnable
     }
 
 
-
+    /*
     //SurfaceView allows handling of onTouchEvent
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent)
@@ -531,6 +536,30 @@ public class FSView extends SurfaceView implements Runnable
                 break;
         }
         return true;
+    }
+    */
+
+    @Override
+    public boolean onTouchEvent(MotionEvent motionEvent)
+    {
+        switch(motionEvent.getAction())
+        {
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_MOVE:
+                player.setY((int)motionEvent.getY());
+                break;
+
+
+        }
+
+        return true;
+    }
+
+
+
+    public static void stopMusic()
+    {
+        gameOnSound.stop();
     }
 }
 
