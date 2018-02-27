@@ -8,7 +8,7 @@ import static com.example.student.flappyspaceship.ObjectType.BULLET;
 import static com.example.student.flappyspaceship.ObjectType.ENEMY;
 
 /**
- * Created by Jonathon Tyson and Cristian Murarescu on 16/02/2018.
+ * Created by Jonathon Tyson on 16/02/2018.
  */
 
 public class Bullet extends GameObject

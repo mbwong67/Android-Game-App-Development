@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Jonathon Tyson & Cristian Murarescu on 16/02/2018.
+ * Created by Jonathon Tyson on 16/02/2018.
  */
 
 public class ObjectManager

@@ -21,6 +21,8 @@ public class EnemyShip extends GameObject
     // Has a copy of the players ship for use in logic
     private PlayerShip m_PlayerShip;
     final MediaPlayer m_MediaDestroyed;
+    public Context m_context;
+    public Explosion explosion;
 
     //integer that stores the speed of the ship
     private int speed = 1;
@@ -31,6 +33,7 @@ public class EnemyShip extends GameObject
         // Determines the type of the GameObject
         super(ENEMY);
 
+        m_context = context;
         m_PlayerShip = player;
         m_MediaDestroyed = media;
 
@@ -113,6 +116,8 @@ public class EnemyShip extends GameObject
     {
         if (other.GetType() == BULLET)
         {
+            explosion = new Explosion(m_context, x, y);
+            ObjectManager.GetInstance().AddItem(explosion, false);
             m_MediaDestroyed.start();
             setX(-300);
         }

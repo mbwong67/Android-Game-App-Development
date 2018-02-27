@@ -44,8 +44,6 @@ public class SpaceDust extends GameObject
 
     public void Update()
     {
-
-
         //Respawns when the space dust is offscreen
         if(x < 0)
         {

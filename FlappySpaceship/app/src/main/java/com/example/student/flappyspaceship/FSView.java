@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import static com.example.student.flappyspaceship.ObjectType.BULLET;
 import static com.example.student.flappyspaceship.ObjectType.ENEMY;
+import static com.example.student.flappyspaceship.ObjectType.EXPLOSION;
 import static com.example.student.flappyspaceship.ObjectType.SPACEDUST;
 
 
