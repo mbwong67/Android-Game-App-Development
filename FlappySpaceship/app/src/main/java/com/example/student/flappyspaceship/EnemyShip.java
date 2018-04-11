@@ -9,6 +9,7 @@ import android.media.MediaPlayer;
 import java.util.Random;
 
 import static com.example.student.flappyspaceship.ObjectType.BULLET;
+import static com.example.student.flappyspaceship.ObjectType.MISSILE;
 import static com.example.student.flappyspaceship.ObjectType.ENEMY;
 
 /**
@@ -23,6 +24,8 @@ public class EnemyShip extends GameObject
     final MediaPlayer m_MediaDestroyed;
     public Context m_context;
     public Explosion explosion;
+
+    public MissileUI m_missileDrop;
 
     //integer that stores the speed of the ship
     private int speed = 1;
@@ -114,11 +117,15 @@ public class EnemyShip extends GameObject
 
     public void ProcessCollision(GameObject other)
     {
-        if (other.GetType() == BULLET)
+        if (other.GetType() == BULLET || other.GetType() == MISSILE)
         {
             explosion = new Explosion(m_context, x, y);
             ObjectManager.GetInstance().AddItem(explosion, false);
             m_MediaDestroyed.start();
+
+            m_missileDrop = new MissileUI(m_context, x, y);
+            ObjectManager.GetInstance().AddItem(m_missileDrop, true);
+
             setX(-300);
         }
     }

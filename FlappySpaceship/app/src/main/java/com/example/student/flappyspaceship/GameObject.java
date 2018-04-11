@@ -105,4 +105,9 @@ public abstract class GameObject
         return checkThis;
     }
 
+    public double Magnitude()
+    {
+     return Math.sqrt((x * x) + (y * y));
+    }
+
 }

@@ -12,6 +12,7 @@ import android.view.SurfaceHolder;
 
 import static com.example.student.flappyspaceship.ObjectType.BULLET;
 import static com.example.student.flappyspaceship.ObjectType.ENEMY;
+import static com.example.student.flappyspaceship.ObjectType.MISSILEUI;
 import static com.example.student.flappyspaceship.ObjectType.PLAYER;
 
 /**
@@ -44,6 +45,12 @@ public class PlayerShip extends GameObject
     // Shooting variables
     public Bullet bullet;
     private float m_shootingDelay;
+    public Missile m_missile;
+    public int m_missileCount;
+    private float m_missleDelay;
+
+    // Player target
+    public EnemyShip m_target;
 
     public int maxX;
     public Context m_context;
@@ -52,6 +59,9 @@ public class PlayerShip extends GameObject
     public PlayerShip(Context context, int screenX, int screenY, Paint paint, Canvas canvas, SurfaceHolder ourHolder, MediaPlayer shooting)
     {
         super(PLAYER);
+
+        m_missileCount = 0;
+        m_missleDelay = 15.0f;
 
         maxX = screenX;
         m_context = context;
@@ -88,6 +98,8 @@ public class PlayerShip extends GameObject
     public void Update()
     {
         --m_shootingDelay;
+        --m_missleDelay;
+
         if (m_shootingDelay <= 0.0f)
         {
             bullet = new Bullet(m_context, this.GetX()+150, this.GetY()+82);
@@ -110,6 +122,14 @@ public class PlayerShip extends GameObject
             {
                 reqPos = true;
             }
+        }
+
+        if (m_missileCount > 0 && m_missleDelay <= 0.0f)
+        {
+            m_missile = new Missile(m_context, this.GetX()+150, this.GetY()+82);
+            ObjectManager.GetInstance().AddItem(m_missile, true);
+            --m_missileCount;
+            m_missleDelay = 15.0f;
         }
 
         //Updates the collision box location for the player ship
@@ -148,6 +168,12 @@ public class PlayerShip extends GameObject
                 //soundPool.play(destroyed, 1, 1, 0, 0, 1);
                 // gameEnded = true;
             }
+        }
+
+        if (other.GetType() == MISSILEUI)
+        {
+            m_missileCount++;
+            other.Deactivate();
         }
     }
 

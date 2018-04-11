@@ -16,6 +16,7 @@ public class ObjectManager
 
     public ArrayList<GameObject> m_allObjectList = new ArrayList<GameObject>();
     public ArrayList<GameObject> m_colliderList = new ArrayList<GameObject>();
+    public ArrayList<GameObject> m_enemyList = new ArrayList<GameObject>();
 
     private ObjectManager()
     {
@@ -31,6 +32,10 @@ public class ObjectManager
         return instance;
     }
 
+    public void AddEnemy(GameObject enemy)
+    {
+        m_enemyList.add(enemy);
+    }
 
     public void AddItem(GameObject newItem, boolean collides)
     {

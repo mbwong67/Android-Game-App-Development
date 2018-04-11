@@ -430,12 +430,15 @@ public class FSView extends SurfaceView implements Runnable
         //Initialising the enemy ship objects
         enemy1 = new EnemyShip(context, screenX, screenY, player, killedEnemySound);
         ObjectManager.GetInstance().AddItem(enemy1, true);
+        ObjectManager.GetInstance().AddEnemy(enemy1);
 
         enemy2 = new EnemyShip(context, screenX, screenY, player, killedEnemySound);
         ObjectManager.GetInstance().AddItem(enemy2, true);
+        ObjectManager.GetInstance().AddEnemy(enemy2);
 
         enemy3 = new EnemyShip(context, screenX, screenY, player, killedEnemySound);
         ObjectManager.GetInstance().AddItem(enemy3, true);
+        ObjectManager.GetInstance().AddEnemy(enemy3);
 
         // if(screenX > 1000)
         // {
