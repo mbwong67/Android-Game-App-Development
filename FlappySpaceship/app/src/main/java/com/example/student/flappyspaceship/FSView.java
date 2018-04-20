@@ -236,6 +236,7 @@ public class FSView extends SurfaceView implements Runnable
             timeTaken = System.currentTimeMillis() - timeStarted;
         }
 
+        /*
         //Completed the game!
         if(distanceRemaining < 0)
         {
@@ -254,6 +255,12 @@ public class FSView extends SurfaceView implements Runnable
             distanceRemaining = 0;
 
             //Ends the game
+            gameEnded = true;
+        }
+        */
+
+        if(player.getShieldStrength() <= 0)
+        {
             gameEnded = true;
         }
     }
